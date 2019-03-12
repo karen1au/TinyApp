@@ -2,7 +2,7 @@ var express = require("express");
 var app = express();
 var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -32,21 +32,31 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[req.params.shortURL];
   if (!longURL){
     res.send("Does not exist.");
-  } else{
-  res.redirect(longURL);}
+  } else {
+    res.redirect(longURL);
+  }
+
   console.log("status code: ",res.statusCode);
 });
 
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = {
-        shortURL: req.params.shortURL,
-        longURL: urlDatabase[req.params.shortURL] };
+  const shortURL = req.params.shortURL;
+  const templateVars = {
+    shortURL: shortURL,
+    longURL: urlDatabase[shortURL]
+  };
   res.render("urls_show", templateVars);
+});
+
+app.post("/urls/:shortURL/delete", (req, res) =>{
+  let shortURL = req.params.shortURL;
+  console.log("deleted");
+  delete urlDatabase[shortURL];
+  res.redirect('/urls');
 });
 
 app.get("/urls.json", (req, res) => {
@@ -57,17 +67,15 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
 
 function generateRandomString() {
   let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let string = '';
   for (let i = 0; i < 6; i++){
-    let random = Math.floor(Math.random()*chars.length);
+    let random = Math.floor(Math.random() * chars.length);
     string += chars[random];
   } return string;
 }
