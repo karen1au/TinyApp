@@ -26,7 +26,9 @@ app.get("/urls/new", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);
-  res.send("Ok");
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -53,7 +55,7 @@ app.listen(PORT, () => {
 function generateRandomString() {
   let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let string = '';
-  for (let i = 0; i < 7; i++){
+  for (let i = 0; i < 6; i++){
     let random = Math.floor(Math.random()*chars.length);
     string += chars[random];
   } return string;
