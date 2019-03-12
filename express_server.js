@@ -38,7 +38,7 @@ app.get("/u/:shortURL", (req, res) => {
     res.send("Does not exist.");
   } else{
   res.redirect(longURL);}
-  console.log(res.statusCode);
+  console.log("status code: ",res.statusCode);
 });
 
 
