@@ -22,7 +22,12 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
-})
+});
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);
+  res.send("Ok");
+});
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
@@ -43,3 +48,13 @@ app.get("/hello", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
+function generateRandomString() {
+  let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let string = '';
+  for (let i = 0; i < 7; i++){
+    let random = Math.floor(Math.random()*chars.length);
+    string += chars[random];
+  } return string;
+}
