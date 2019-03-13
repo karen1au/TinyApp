@@ -81,13 +81,14 @@ app.post("/register", (req, res) => {
     };
     res.cookie('userID', userID);
     console.log(users);
-    res.redirect("/urls");
+    res.redirect("/login");
   }
 });
 
 //page for all urls
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  const currentUser = req.cookies.user_ID;
+  const templateVars = { urls: urlsForUser(currentUser), user: users[currentUser]};
   res.render("urls_index", templateVars);
 });
 //create form
@@ -178,3 +179,11 @@ function emailValidate(newemail) {
   // }
 }
 
+function urlsForUser(id) {
+  let userURL = {};
+  for ( data in urlDatabase){
+    if (urlDatabase[data].userID == id){
+      userURL[data] = urlDatabase[data].longURL;
+    }
+  } return userURL;
+}
