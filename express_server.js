@@ -132,16 +132,21 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 //delete url
 app.post("/urls/:shortURL/delete", (req, res) =>{
+  if(req.cookies.user_ID == urlDatabase[req.params.shortURL].userID){
   let shortURL = req.params.shortURL;
   console.log("deleted");
   delete urlDatabase[shortURL];
   res.redirect('/urls');
+  }
 });
 //update url
 app.post("/urls/:shortURL/edit", (req, res) =>{
-  urlDatabase[req.params.shortURL] = req.body.longURL;
+  if(req.cookies.user_ID == urlDatabase[req.params.shortURL].userID){
+  urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
-})
+  return;
+  }
+});
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
