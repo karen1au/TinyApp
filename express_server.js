@@ -112,11 +112,11 @@ app.post("/urls", (req, res) => {
 });
 //redirect to real site
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  if (!longURL){
+  const long = urlDatabase[req.params.shortURL].longURL;
+  if (!long){
     res.send("Does not exist.");
   } else {
-    res.redirect(longURL);
+    res.redirect(long);
   }
   console.log("status code: ",res.statusCode);
 });
