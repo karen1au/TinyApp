@@ -50,7 +50,8 @@ app.post("/login", (req, res) => {
 
 //login form
 app.get("/login", (req, res) => {
-  res.render("urls_login");
+  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  res.render("urls_login", templateVars);
 });
 
 //logout
@@ -61,7 +62,8 @@ app.post("/logout", (req, res) => {
 
 //go to register page
 app.get("/register", (req, res) => {
-  res.render("urls_register");
+  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  res.render("urls_register", templateVars);
 });
 
 //submit register
@@ -90,7 +92,8 @@ app.get("/urls", (req, res) => {
 });
 //create form
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  res.render("urls_new", templateVars);
 });
 //create short url
 app.post("/urls", (req, res) => {
