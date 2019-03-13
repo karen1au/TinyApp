@@ -93,7 +93,11 @@ app.get("/urls", (req, res) => {
 //create form
 app.get("/urls/new", (req, res) => {
   const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  if (!req.cookies.user_ID){
+    res.redirect('/login');
+  } else {
   res.render("urls_new", templateVars);
+}
 });
 //create short url
 app.post("/urls", (req, res) => {
