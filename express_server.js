@@ -32,10 +32,18 @@ app.get("/", (req, res) => {
 
 //login
 app.post("/login", (req, res) => {
+  if (emailValidate(req.body.email) == 'new'){
+    res.status(403);
+  } else {
   for ( userID in users) {
     if (users[userID].email && users[userID].email == req.body.email) {
+      if (req.body.password == users[userID].password){
       res.cookie('user_ID', userID);
+      } else {
+      res.status(403).send('password incorrect');
+      }
     }
+   }
   }
   res.redirect('/urls');
 });
@@ -154,7 +162,7 @@ function emailValidate(newemail) {
   for (user in users){
     emailArray.push(users[user].email);
   }
-    if (emailArray.includes(newemail)){
+    if ( newemail && emailArray.includes(newemail)){
       return 'exist';
     } return 'new';
   // }
