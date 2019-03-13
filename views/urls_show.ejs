@@ -10,7 +10,7 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <% include ./partials/_header %>
-  <a href='#'>Shorten Now!</a>
+
   <h4>Tiny URL for <%= longURL %></h4>
   <p><%= shortURL %></p>
   <form class="form-inline" action="/urls/<%=shortURL %>/edit" method="POST">

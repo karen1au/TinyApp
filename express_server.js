@@ -40,7 +40,7 @@ app.post("/login", (req, res) => {
       if (req.body.password == users[userID].password){
       res.cookie('user_ID', userID);
       } else {
-      res.status(403).send('password incorrect');
+      res.status(403).redirect('/login');
       }
     }
    }

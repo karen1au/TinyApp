@@ -11,13 +11,13 @@
 <body style="font-size:20px; padding:50px;">
 
   <% include ./partials/_header %>
-  <a href='#'>Shorten Now!</a>
+
   <h2>My URLs</h2>
   <ul>
     <% for (let shortURL in urls) {%>
     <li><b></strong><%= shortURL %>:</b> <%= urls[shortURL] %></li>
     <div class="form-inline">
-    <form method="POST" action="/urls/<%=shortURL %>/delete"><button type="submit" class="btn btn-primary" style="margin-right: 0.5em">Delete</button></form>
+    <form method="POST" action="/urls/<%=shortURL %>/delete"><button type="submit" class="btn btn-danger" style="margin-right: 0.5em">Delete</button></form>
     <a href='/urls/<%=shortURL %>'><button type="submit" class="btn btn-primary">Edit</button></a>
   </div>
     <%}; %>
