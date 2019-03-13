@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var urlDatabase = {
@@ -14,6 +16,13 @@ app.set("view engine", "ejs");
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
+
+//login
+app.post("/login", (req, res) => {
+  res.cookie('username',req.body.username);
+  res.redirect('/urls');
+});
+
 //page for all urls
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
