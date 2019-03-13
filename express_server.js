@@ -51,6 +51,30 @@ app.post("/logout", (req, res) => {
   res.redirect('urls');
 });
 
+//go to register page
+app.get("/register", (req, res) => {
+  res.render("urls_register");
+});
+
+//submit register
+app.post("/register", (req, res) => {
+  if (emailValidate(req.body.email) == 'exist'){
+    res.status(400).send('Duplicated email');
+  } else if (req.body.email == ' ' || req.body.password == ''){
+    res.status(400).send('Incomplete Information');
+  } else {
+    let userID = generateRandomString();
+    users[userID] = {
+      id: userID,
+      email: req.body.email,
+      password: req.body.password
+    };
+    res.cookie('userID', userID);
+    console.log(users);
+    res.redirect("/urls");
+  }
+});
+
 //page for all urls
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
@@ -122,16 +146,17 @@ function generateRandomString() {
 }
 
 function emailValidate(newemail) {
-  // for (user in users){
-  //   if (newemail !== users[user].email){
-  //     return  'ok';
-  //   } return 'exist';
-  // }
+  // for ( userID in users) {
+  //   if (users[userID].email && users[userID].email == newemail) {
+  //    return 'exist';
+  //   } return 'new';
   let emailArray = [];
   for (user in users){
     emailArray.push(users[user].email);
   }
     if (emailArray.includes(newemail)){
-      return false;
-    } return true;
+      return 'exist';
+    } return 'new';
+  // }
 }
+
