@@ -3,6 +3,8 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require('bcrypt');
+
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -36,7 +38,7 @@ app.post("/login", (req, res) => {
     res.status(403);
   } else {
     //check for password
-    if (req.body.password == users[userID].password){
+    if (bcrypt.compareSync(req.body.password, users[userID].password)){
       res.cookie('user_ID', userID);
     } else {
     res.status(403).redirect('/login');
@@ -54,7 +56,7 @@ app.get("/login", (req, res) => {
 //logout
 app.post("/logout", (req, res) => {
   res.clearCookie('user_ID');
-  res.redirect('urls');
+  res.redirect('/login');
 });
 
 //go to register page
@@ -70,11 +72,12 @@ app.post("/register", (req, res) => {
   } else if (req.body.email == ' ' || req.body.password == ''){
     res.status(400).send('Incomplete Information');
   } else {
+    const realPw = req.body.password;
     let userID = generateRandomString();
     users[userID] = {
       id: userID,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(realPw, 10)
     };
     res.cookie('userID', userID);
     console.log(users);
