@@ -17,7 +17,10 @@
       <% if (currentUser == userOfURL){ %>
         <h5>Tiny URL for <%= longURL %></h5>
         <h4 style="color: #0066ff"><%= shortURL %></h4>
-        <p> Total views: <%=views%></p>
+        <div style="border-style: dashed; border-width: 0.5px; width: 300px; border-color: #0066ff; padding: 10px">
+        <p>Total views: <%= views %></p>
+        <p>Created on : <%= createDate %></p>
+        </div>
         <form class="form-inline" action="/urls/<%=shortURL %>?_method=PUT" method="POST">
           <div class="form-group mb-2">
             <label for="longURL">Update the URL:</label>
