@@ -32,18 +32,15 @@ app.get("/", (req, res) => {
 
 //login
 app.post("/login", (req, res) => {
-  if (emailValidate(req.body.email) == 'new'){
+  if (!doesEmailExist(req.body.email)){
     res.status(403);
   } else {
-  for ( userID in users) {
-    if (users[userID].email && users[userID].email == req.body.email) {
-      if (req.body.password == users[userID].password){
+    //check for password
+    if (req.body.password == users[userID].password){
       res.cookie('user_ID', userID);
-      } else {
-      res.status(403).redirect('/login');
-      }
+    } else {
+    res.status(403).redirect('/login');
     }
-   }
   }
   res.redirect('/urls');
 });
@@ -68,7 +65,7 @@ app.get("/register", (req, res) => {
 
 //submit register
 app.post("/register", (req, res) => {
-  if (emailValidate(req.body.email) == 'exist'){
+  if (doesEmailExist(req.body.email)){
     res.status(400).send('Duplicated email');
   } else if (req.body.email == ' ' || req.body.password == ''){
     res.status(400).send('Incomplete Information');
@@ -169,19 +166,23 @@ function generateRandomString() {
   } return string;
 }
 
-function emailValidate(newemail) {
-  // for ( userID in users) {
-  //   if (users[userID].email && users[userID].email == newemail) {
-  //    return 'exist';
-  //   } return 'new';
-  let emailArray = [];
-  for (user in users){
-    emailArray.push(users[user].email);
-  }
-    if ( newemail && emailArray.includes(newemail)){
-      return 'exist';
-    } return 'new';
+
+function doesEmailExist(newemail) {
+  let doesEmailExist = false;
+  for ( userID in users) {
+    if (users[userID].email && users[userID].email == newemail) {
+     doesEmailExist = true;
+     break;
+    }
+  // let emailArray = [];
+  // for (user in users){
+  //   emailArray.push(users[user].email);
   // }
+  //   if ( newemail && emailArray.includes(newemail)){
+  //     return 'exist';
+  //   } return 'new';
+  }
+  return doesEmailExist;
 }
 
 function urlsForUser(id) {
