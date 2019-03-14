@@ -1,25 +1,20 @@
 <h1> Tiny App </h1>
-
 <% if (user){ %>
-
   <div class="form-inline">
     <a href='/urls' style="margin-right:0.5em">URLs</a>
     <span> | </span>
     <a href='/urls/new' style="margin-left:0.5em">Create New TinyURL</a>
   </div>
-
   <form class="form-inline" action="/logout" method="POST">
     <div class="form-block">
       <h5>Logged In As: <%= user.email %></h5>
-      <button type="submit" class="btn btn-primary" style="margin-top: 0.5em">Logout</button>
+      <button type="submit" class="btn btn-primary" style="margin-top: 0.5em; margin-bottom: 1em">Logout</button>
     </div>
   </form>
 <% } else { %>
-
   <div class="form-inline">
     <a href='/register' style="margin-right:0.5em">Register</a>
     <span> | </span>
     <a href='/login' style="margin-left:0.5em">Login</a>
   </div>
-
 <% } %>

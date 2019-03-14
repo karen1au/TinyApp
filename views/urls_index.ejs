@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp</title>
-</head>
-<body style="font-size:20px; padding:50px;">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>TinyApp</title>
+  </head>
 
-  <% include ./partials/_header %>
+  <body style="font-size:20px; padding:50px;">
+    <% include ./partials/_header %>
+     <% if (!user){ %>
+      <h3 style="margin-top: 1em">:( we don't recognize you...</h3>
+     <%} else { %>
+      <h2>My URLs</h2>
+      <ul>
+        <% for (let shortURL in urls) {%>
+        <li><b></strong><%= shortURL %>:</b> <%= urls[shortURL] %></li>
+        <div class="form-inline">
+        <form method="POST" action="/urls/<%=shortURL %>?_method=DELETE"><button type="submit" class="btn btn-danger" style="margin-right: 0.5em">Delete</button></form>
+        <a href='/urls/<%=shortURL %>'><button type="submit" class="btn btn-primary">Edit</button></a>
+        </div>
+        <%}; %>
+      </ul>
+    <%}%>
+  </body>
 
-   <% if (!user){ %>
-    <h3 style="margin-top: 1em">Join us to <b>T-I-N-Y</b> it down</h3>
-   <%} else { %>
-    <h2>My URLs</h2>
-    <ul>
-      <% for (let shortURL in urls) {%>
-      <li><b></strong><%= shortURL %>:</b> <%= urls[shortURL] %></li>
-      <div class="form-inline">
-      <form method="POST" action="/urls/<%=shortURL %>/delete"><button type="submit" class="btn btn-danger" style="margin-right: 0.5em">Delete</button></form>
-      <a href='/urls/<%=shortURL %>'><button type="submit" class="btn btn-primary">Edit</button></a>
-    </div>
-      <%}; %>
-    </ul>
-  <%}%>
-</body>
 </html>
