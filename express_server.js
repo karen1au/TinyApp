@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
+const cookieSession = require("cookie-session");
 const bcrypt = require('bcrypt');
 
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['malimalihome']
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const urlDatabase = {
@@ -29,7 +32,11 @@ const users = {
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  if(req.session.user_ID){
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
 });
 
 //login
@@ -39,7 +46,7 @@ app.post("/login", (req, res) => {
   } else {
     //check for password
     if (bcrypt.compareSync(req.body.password, users[userID].password)){
-      res.cookie('user_ID', userID);
+      req.session.user_ID = userID;
     } else {
     res.status(403).redirect('/login');
     }
@@ -49,19 +56,19 @@ app.post("/login", (req, res) => {
 
 //login form
 app.get("/login", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  const templateVars = { urls: urlDatabase, user: users[req.session.user_ID]};
   res.render("urls_login", templateVars);
 });
 
 //logout
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_ID');
+  req.session.user_ID = null;
   res.redirect('/login');
 });
 
 //go to register page
 app.get("/register", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
+  const templateVars = { urls: urlDatabase, user: users[req.session.user_ID]};
   res.render("urls_register", templateVars);
 });
 
@@ -79,22 +86,22 @@ app.post("/register", (req, res) => {
       email: req.body.email,
       password: bcrypt.hashSync(realPw, 10)
     };
-    res.cookie('userID', userID);
+    req.session.user_ID = userID;
     console.log(users);
-    res.redirect("/login");
+    res.redirect("/urls");
   }
 });
 
 //page for all urls
 app.get("/urls", (req, res) => {
-  const currentUser = req.cookies.user_ID;
+  const currentUser = req.session.user_ID;
   const templateVars = { urls: urlsForUser(currentUser), user: users[currentUser]};
   res.render("urls_index", templateVars);
 });
 //create form
 app.get("/urls/new", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[req.cookies.user_ID]};
-  if (!req.cookies.user_ID){
+  const templateVars = { urls: urlDatabase, user: users[req.session.user_ID]};
+  if (!req.session.user_ID){
     res.redirect('/login');
   } else {
   res.render("urls_new", templateVars);
@@ -106,7 +113,7 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {longURL: '', userID: ''};
   urlDatabase[shortURL].longURL = req.body.longURL;
-  urlDatabase[shortURL].userID = req.cookies.user_ID;
+  urlDatabase[shortURL].userID = req.session.user_ID;
   console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
 });
@@ -126,13 +133,14 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: shortURL,
     longURL: urlDatabase[shortURL].longURL,
-    user: users[req.cookies.user_ID]
+    user: users[req.session.user_ID],
+    userOfURL: urlDatabase[shortURL].userID
   };
   res.render("urls_show", templateVars);
 });
 //delete url
 app.post("/urls/:shortURL/delete", (req, res) =>{
-  if(req.cookies.user_ID == urlDatabase[req.params.shortURL].userID){
+  if(req.session.user_ID == urlDatabase[req.params.shortURL].userID){
   let shortURL = req.params.shortURL;
   console.log("deleted");
   delete urlDatabase[shortURL];
@@ -141,7 +149,7 @@ app.post("/urls/:shortURL/delete", (req, res) =>{
 });
 //update url
 app.post("/urls/:shortURL/edit", (req, res) =>{
-  if(req.cookies.user_ID == urlDatabase[req.params.shortURL].userID){
+  if(req.session.user_ID == urlDatabase[req.params.shortURL].userID){
   urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
   return;
