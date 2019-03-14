@@ -14,7 +14,7 @@
   <% if (!user){ %>
   <h4>Please log in fist</h4>
   <%} else {%>
-    <% if (user == userOfURL){ %>
+    <% if (currentUser == userOfURL){ %>
     <h4>Tiny URL for <%= longURL %></h4>
     <p><%= shortURL %></p>
     <form class="form-inline" action="/urls/<%=shortURL %>/edit" method="POST">
@@ -25,9 +25,8 @@
       </div>
     </form>
     <%} else {%>
-    <h4>This URL doesn't belong to you...</h4>
+    <h4>this doesnt belong to you</h4>
     <%}%>
   <%}%>
-
 </body>
 </html>
