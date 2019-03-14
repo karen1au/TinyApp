@@ -42,16 +42,16 @@ app.get("/", (req, res) => {
 //login
 app.post("/login", (req, res) => {
   if (!doesEmailExist(req.body.email)){
-    res.status(403);
+    res.status(403).redirect('/urls');
   } else {
     //check for password
     if (bcrypt.compareSync(req.body.password, users[userID].password)){
       req.session.user_ID = userID;
+      res.redirect('/urls');
     } else {
     res.status(403).redirect('/login');
     }
   }
-  res.redirect('/urls');
 });
 
 //login form
