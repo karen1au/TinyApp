@@ -15,9 +15,8 @@ app.use(methodOverride("_method"));
 
 //Database
 const urlDatabase = {
-  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID", create
-  :'' },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID", createDate: '' }
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID", createDate: '', views: 1 },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID", createDate: '', views: 1 }
 };
 
 const users = {
@@ -125,6 +124,7 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL].longURL = req.body.longURL;
   urlDatabase[shortURL].userID = req.session.user_ID;
   urlDatabase[shortURL].createDate = new Date().toJSON().slice(0,10);
+  urlDatabase[shortURL].views = 1;
   res.redirect(`/urls/${shortURL}`);
   } res.redirect('urls/new');
 });
@@ -144,21 +144,17 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const currentUser = req.session.user_ID;
-  req.session.views = (req.session.views || 0) + 1;
-  // let uniqViews = 1;
-  // if (currentUser && req.session.views == 1){
-  //   uniqViews + 1;
-  // }
   const templateVars = {
     shortURL: shortURL,
     longURL: urlDatabase[shortURL].longURL,
     currentUser: currentUser,
     userOfURL: urlDatabase[shortURL].userID,
     user: users[currentUser],
-    views: req.session.views,
+    views: urlDatabase[shortURL].views,
     createDate: urlDatabase[shortURL].createDate
     // uniqViews: uniqViews
   };
+  urlDatabase[shortURL].views += 1;
   res.render("urls_show", templateVars);
 });
 
