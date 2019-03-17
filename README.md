@@ -4,8 +4,14 @@ TinyApp is a full stack web application built with Node and Express that allows 
 > “Simplicity is the ultimate sophistication.” —Leonardo da Vinci
 
 ## Final Product
-
-[pictures]
+!["Screenshot of URLs page"](https://github.com/karen1au/TinyApp/blob/master/docs/index.png)
+Welcome to TinyAPP!
+!["Screenshot of create page"](https://github.com/karen1au/TinyApp/blob/master/docs/create.png)
+With TinyApp, you can now shorten a link in a second!
+!["Screenshot of registeration page"](https://github.com/karen1au/TinyApp/blob/master/docs/list.png)
+Create your account and save all the Tiny URL you created!
+!["Screenshot of update page"](https://github.com/karen1au/TinyApp/blob/master/docs/update.png)
+You can also update and view details of each of the URLs in your account
 
 ## Dependencies
 
