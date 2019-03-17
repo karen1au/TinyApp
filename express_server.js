@@ -46,14 +46,14 @@ app.get("/", (req, res) => {
 //login
 app.post("/login", (req, res) => {
   if (!doesEmailExist(req.body.email)){
-    res.status(400).redirect('/urls');
+    res.status(400).send('Email is not registered.');
   } else {
     //check for password
     if (bcrypt.compareSync(req.body.password, users[userID].password)){
       req.session.user_ID = userID;
       res.redirect('/urls');
     } else {
-    res.status(400).redirect('/login');
+    res.status(400).send('Incorrect Password.');
     }
   }
 });
@@ -80,9 +80,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   if (doesEmailExist(req.body.email)){
     res.status(400).send('Duplicated email');
-  } else if (req.body.email == ' ' || req.body.password == ''){
-    res.status(400).send('Incomplete Information');
-  } else {
+  } else if (req.body.email && req.body.password){
     const realPw = req.body.password;
     let userID = generateRandomString();
     users[userID] = {
@@ -92,6 +90,8 @@ app.post("/register", (req, res) => {
     };
     req.session.user_ID = userID;
     res.redirect("/urls");
+  } else {
+    res.status(400).send('Incomplete Information');
   }
 });
 
@@ -126,7 +126,8 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL].createDate = new Date().toJSON().slice(0,10);
   urlDatabase[shortURL].views = 1;
   res.redirect(`/urls/${shortURL}`);
-  } res.redirect('urls/new');
+  }
+  res.redirect('urls/new');
 });
 
 //redirect to real site
@@ -162,8 +163,8 @@ app.get("/urls/:shortURL", (req, res) => {
 app.delete("/urls/:shortURL/", (req, res) =>{
   const shortURL = req.params.shortURL;
   if(req.session.user_ID == urlDatabase[shortURL].userID){
-  delete urlDatabase[shortURL];
-  res.redirect('/urls');
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
   }
 });
 
@@ -173,7 +174,6 @@ app.put("/urls/:shortURL/", (req, res) =>{
   if(req.session.user_ID == urlDatabase[shortURL].userID){
   urlDatabase[shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
-  return;
   }
 });
 
@@ -194,10 +194,10 @@ function generateRandomString() {
   } return string;
 }
 
-function doesEmailExist(newemail) {
+function doesEmailExist(newEmail) {
   let doesEmailExist = false;
   for ( userID in users) {
-    if (users[userID].email && users[userID].email == newemail) {
+    if (users[userID].email && users[userID].email == newEmail) {
      doesEmailExist = true;
      break;
     }
@@ -211,5 +211,6 @@ function urlsForUser(id) {
     if (urlDatabase[data].userID == id){
       userURL[data] = urlDatabase[data].longURL;
     }
-  } return userURL;
+  }
+  return userURL;
 }
